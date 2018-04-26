@@ -199,6 +199,12 @@ func (f *ipvsdr) syncLoadBalancer(obj interface{}) error {
 		return err
 	}
 
+	if nlb.Spec.Providers.Ipvsdr == nil {
+		// maybe the original ipvsdr provider is gone
+		// cleanup the useless resources
+		return f.cleanup(lb)
+	}
+
 	// fresh lb
 	if lb.UID != nlb.UID {
 		return nil

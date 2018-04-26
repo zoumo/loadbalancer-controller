@@ -208,6 +208,12 @@ func (f *nginx) syncLoadBalancer(obj interface{}) error {
 		return err
 	}
 
+	if nlb.Spec.Proxy.Type != lbapi.ProxyTypeNginx {
+		// maybe the proxy type is changed
+		// cleanup the useless resources
+		return f.cleanup(lb)
+	}
+
 	// fresh lb
 	if lb.UID != nlb.UID {
 		//  original loadbalancer is gone
